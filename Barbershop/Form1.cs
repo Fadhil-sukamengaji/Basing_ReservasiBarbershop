@@ -37,25 +37,20 @@ namespace Barbershop
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-<<<<<<< HEAD
                 string query = "SELECT * FROM vw_Reservasi";
                 da = new SqlDataAdapter(query, conn);
                 cb = new SqlCommandBuilder(da);
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM v_DaftarReservasi", conn);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
                 bs.DataSource = dt;
                 dataGridView1.DataSource = bs;
-=======
-                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM v_DaftarReservasi", conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
 
                 BindingSource bs = new BindingSource();
                 bs.DataSource = dt;
                 dataGridView1.DataSource = bs;
 
                 bindingNavigator1.BindingSource = bs;
->>>>>>> e29a21ff04056e53f0e95fd8ee0fdd891f522986
             }
         }
 
@@ -95,7 +90,6 @@ namespace Barbershop
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-<<<<<<< HEAD
                 try
                 {
                     conn.Open();
@@ -120,7 +114,8 @@ namespace Barbershop
                 {
                     MessageBox.Show(ex.Message, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-=======
+            }
+        }
                 SqlCommand cmd = new SqlCommand("sp_TambahReservasi", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
@@ -140,7 +135,6 @@ namespace Barbershop
                     MessageBox.Show(ex.Message); // Akan memunculkan error "Jadwal penuh" dari SQL
                 }
                 RefreshTable();
->>>>>>> e29a21ff04056e53f0e95fd8ee0fdd891f522986
             }
         }
 
@@ -232,9 +226,14 @@ namespace Barbershop
             }
         }
 
-<<<<<<< HEAD
         private void btnTestInjection_Click(object sender, EventArgs e)
-=======
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "UPDATE Reservasi SET nama_pelanggan = 'HACKED' WHERE nama_pelanggan = '" + textBoxNama.Text + "'";
         private void btnSearch_Click(object sender, EventArgs e)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -248,14 +247,7 @@ namespace Barbershop
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
->>>>>>> e29a21ff04056e53f0e95fd8ee0fdd891f522986
         {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-                    string query = "UPDATE Reservasi SET nama_pelanggan = 'HACKED' WHERE nama_pelanggan = '" + textBoxNama.Text + "'";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
