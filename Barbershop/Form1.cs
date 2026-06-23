@@ -7,13 +7,13 @@ namespace Barbershop
 {
     public partial class Form1 : Form
     {
-
         DataSet ds = new DataSet();
         SqlDataAdapter da;
         BindingSource bs = new BindingSource();
         SqlCommandBuilder cb;
 
         string connectionString = @"Data Source=PADILSU\PADIL;Initial Catalog=DBBarbershop;Integrated Security=True";
+
         public Form1()
         {
             InitializeComponent();
@@ -25,7 +25,17 @@ namespace Barbershop
             LoadComboBoxes();
 
             textBoxNama.DataBindings.Clear();
+            comboBoxLayanan.DataBindings.Clear();
+            comboBoxCapster.DataBindings.Clear();
+            dtpTanggal.DataBindings.Clear();
+            dtpJam.DataBindings.Clear();
+
             textBoxNama.DataBindings.Add("Text", bs, "nama_pelanggan", true, DataSourceUpdateMode.OnPropertyChanged);
+            comboBoxLayanan.DataBindings.Add("SelectedValue", bs, "id_layanan", true, DataSourceUpdateMode.OnPropertyChanged);
+            comboBoxCapster.DataBindings.Add("SelectedValue", bs, "id_capster", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            dtpTanggal.DataBindings.Add("Value", bs, "jam_booking", true, DataSourceUpdateMode.OnPropertyChanged);
+            dtpJam.DataBindings.Add("Value", bs, "jam_booking", true, DataSourceUpdateMode.OnPropertyChanged);
 
             if (bindingNavigator1 != null)
             {
@@ -37,20 +47,32 @@ namespace Barbershop
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = "SELECT * FROM vw_Reservasi";
-                da = new SqlDataAdapter(query, conn);
-                cb = new SqlCommandBuilder(da);
-                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM v_DaftarReservasi", conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                bs.DataSource = dt;
-                dataGridView1.DataSource = bs;
+                try
+                {
+                    string query = "SELECT * FROM vw_Reservasi";
+                    da = new SqlDataAdapter(query, conn);
+                    cb = new SqlCommandBuilder(da);
 
-                BindingSource bs = new BindingSource();
-                bs.DataSource = dt;
-                dataGridView1.DataSource = bs;
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    bs.DataSource = dt;
+                    dataGridView1.DataSource = bs;
 
-                bindingNavigator1.BindingSource = bs;
+                    if (dataGridView1.Columns["id_layanan"] != null)
+                        dataGridView1.Columns["id_layanan"].Visible = false;
+
+                    if (dataGridView1.Columns["id_capster"] != null)
+                        dataGridView1.Columns["id_capster"].Visible = false;
+
+                    if (bindingNavigator1 != null)
+                    {
+                        bindingNavigator1.BindingSource = bs;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal memuat tabel data: " + ex.Message, "Error Tampilan", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -58,31 +80,33 @@ namespace Barbershop
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                conn.Open();
+                try
+                {
+                    conn.Open();
 
-                string queryLayanan = "SELECT id_layanan, " +
-                                      "nama_layanan + ' - Rp. ' + CAST(CAST(harga AS DECIMAL(10,0)) AS VARCHAR) AS LayananHarga " +
-                                      "FROM Layanan";
+                    string queryLayanan = "SELECT id_layanan, " +
+                                          "nama_layanan + ' - Rp. ' + CAST(CAST(harga AS DECIMAL(10,0)) AS VARCHAR) AS LayananHarga " +
+                                          "FROM Layanan";
 
-                SqlDataAdapter daL = new SqlDataAdapter(queryLayanan, conn);
-                DataTable dtL = new DataTable();
-                daL.Fill(dtL);
+                    SqlDataAdapter daL = new SqlDataAdapter(queryLayanan, conn);
+                    DataTable dtL = new DataTable();
+                    daL.Fill(dtL);
 
-                comboBoxLayanan.DataSource = dtL;
-                comboBoxLayanan.DisplayMember = "LayananHarga";
-                comboBoxLayanan.ValueMember = "id_layanan";
+                    comboBoxLayanan.DataSource = dtL;
+                    comboBoxLayanan.DisplayMember = "LayananHarga";
+                    comboBoxLayanan.ValueMember = "id_layanan";
 
-                SqlDataAdapter daC = new SqlDataAdapter("SELECT id_capster, nama FROM Capster", conn);
-                DataTable dtC = new DataTable(); daC.Fill(dtC);
-                comboBoxCapster.DataSource = dtC;
-                comboBoxCapster.DisplayMember = "nama";
-                comboBoxCapster.ValueMember = "id_capster";
-
-                SqlDataAdapter daJ = new SqlDataAdapter("SELECT id_jadwal, hari FROM Jadwal WHERE status_jadwal = 'Tersedia'", conn);
-                DataTable dtJ = new DataTable(); daJ.Fill(dtJ);
-                comboBoxJadwal.DataSource = dtJ;
-                comboBoxJadwal.DisplayMember = "hari";
-                comboBoxJadwal.ValueMember = "id_jadwal";
+                    SqlDataAdapter daC = new SqlDataAdapter("SELECT id_capster, nama FROM Capster", conn);
+                    DataTable dtC = new DataTable();
+                    daC.Fill(dtC);
+                    comboBoxCapster.DataSource = dtC;
+                    comboBoxCapster.DisplayMember = "nama";
+                    comboBoxCapster.ValueMember = "id_capster";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal memuat data pilihan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -94,47 +118,47 @@ namespace Barbershop
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("sp_InsertReservasi", conn);
+                    DateTime waktuBooking = dtpTanggal.Value.Date + dtpJam.Value.TimeOfDay;
+
+                    string queryCek = "SELECT COUNT(*) FROM Reservasi WHERE id_capster = @id_cap AND jam_booking = @jam AND status_reservasi <> 'Selesai'";
+                    using (SqlCommand cmdCek = new SqlCommand(queryCek, conn))
+                    {
+                        cmdCek.Parameters.AddWithValue("@id_cap", comboBoxCapster.SelectedValue ?? DBNull.Value);
+                        cmdCek.Parameters.AddWithValue("@jam", waktuBooking);
+
+                        int jumlahBentrok = (int)cmdCek.ExecuteScalar();
+
+                        if (jumlahBentrok > 0)
+                        {
+                            MessageBox.Show("Capster sudah memiliki jadwal booking aktif di jam dan tanggal tersebut! Silakan pilih waktu lain atau capster lain.",
+                                            "Jadwal Bentrok", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+
+                    SqlCommand cmd = new SqlCommand("sp_TambahReservasi", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@nama_pelanggan", textBoxNama.Text);
-                    cmd.Parameters.AddWithValue("@id_layanan", comboBoxLayanan.SelectedValue);
-                    cmd.Parameters.AddWithValue("@id_capster", comboBoxCapster.SelectedValue);
-                    cmd.Parameters.AddWithValue("@id_jadwal", comboBoxJadwal.SelectedValue);
-                    cmd.Parameters.AddWithValue("@status_reservasi", "Pending");
-                    cmd.Parameters.AddWithValue("@status_pembayaran", "Belum Bayar");
+                    cmd.Parameters.AddWithValue("@nama", textBoxNama.Text);
+                    cmd.Parameters.AddWithValue("@id_lay", comboBoxLayanan.SelectedValue ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@id_cap", comboBoxCapster.SelectedValue ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@jam", waktuBooking);
 
                     cmd.ExecuteNonQuery();
 
-                    MessageBox.Show("Data Berhasil Disimpan!");
+                    using (SqlCommand cmdBackup = new SqlCommand("sp_AutoBackupReservasi", conn))
+                    {
+                        cmdBackup.CommandType = CommandType.StoredProcedure;
+                        cmdBackup.ExecuteNonQuery();
+                    }
 
+                    MessageBox.Show("Data Berhasil Disimpan!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     RefreshTable();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Gagal menyimpan data: " + ex.Message, "Error SQL Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-        }
-                SqlCommand cmd = new SqlCommand("sp_TambahReservasi", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@nama", textBoxNama.Text);
-                cmd.Parameters.AddWithValue("@id_lay", comboBoxLayanan.SelectedValue);
-                cmd.Parameters.AddWithValue("@id_cap", comboBoxCapster.SelectedValue);
-                cmd.Parameters.AddWithValue("@id_jad", comboBoxJadwal.SelectedValue);
-
-                conn.Open();
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Berhasil!");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message); // Akan memunculkan error "Jadwal penuh" dari SQL
-                }
-                RefreshTable();
             }
         }
 
@@ -146,19 +170,32 @@ namespace Barbershop
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    conn.Open();
+                    try
+                    {
+                        conn.Open();
+                        using (SqlCommand cmd = new SqlCommand("sp_UpdateReservasi", conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@id_reservasi", Convert.ToInt32(id));
+                            cmd.Parameters.AddWithValue("@status_reservasi", "Selesai");
+                            cmd.Parameters.AddWithValue("@status_pembayaran", "Lunas");
 
-                    SqlCommand cmd = new SqlCommand("sp_UpdateReservasi", conn);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.ExecuteNonQuery();
 
-                    cmd.Parameters.AddWithValue("@id_reservasi", id);
-                    cmd.Parameters.AddWithValue("@status_reservasi", "Selesai");
-                    cmd.Parameters.AddWithValue("@status_pembayaran", "Lunas");
+                            using (SqlCommand cmdBackup = new SqlCommand("sp_AutoBackupReservasi", conn))
+                            {
+                                cmdBackup.CommandType = CommandType.StoredProcedure;
+                                cmdBackup.ExecuteNonQuery();
+                            }
 
-                    cmd.ExecuteNonQuery();
-
-                    MessageBox.Show("Status Reservasi Diperbarui!");
-                    RefreshTable();
+                            MessageBox.Show("Status Reservasi Diperbarui!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            RefreshTable();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Gagal memperbarui status: " + ex.Message, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
         }
@@ -169,21 +206,60 @@ namespace Barbershop
             {
                 string id = dataGridView1.CurrentRow.Cells["id_reservasi"].Value.ToString();
 
-                if (MessageBox.Show("Hapus data ini?", "Konfirmasi", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show("Hapus data ini?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        conn.Open();
+                        try
+                        {
+                            conn.Open();
+                            using (SqlCommand cmd = new SqlCommand("sp_DeleteReservasi", conn))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.Add("@id_reservasi", SqlDbType.Int).Value = Convert.ToInt32(id);
 
-                        SqlCommand cmd = new SqlCommand("sp_DeleteReservasi", conn);
-                        cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.ExecuteNonQuery();
 
-                        cmd.Parameters.AddWithValue("@id_reservasi", id);
+                                using (SqlCommand cmdBackup = new SqlCommand("sp_AutoBackupReservasi", conn))
+                                {
+                                    cmdBackup.CommandType = CommandType.StoredProcedure;
+                                    cmdBackup.ExecuteNonQuery();
+                                }
 
-                        cmd.ExecuteNonQuery();
-
-                        RefreshTable();
+                                MessageBox.Show("Data Berhasil Dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                RefreshTable();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Gagal menghapus data: " + ex.Message, "Gagal Menghapus", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        }
                     }
+                }
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    using (SqlCommand cmd = new SqlCommand("sp_SearchReservasi", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@nama_pelanggan", txtSearch.Text);
+
+                        SqlDataAdapter daSearch = new SqlDataAdapter(cmd);
+                        DataTable dtSearch = new DataTable();
+                        daSearch.Fill(dtSearch);
+
+                        dataGridView1.DataSource = dtSearch;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Pencarian gagal: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -200,29 +276,52 @@ namespace Barbershop
                     {
                         conn.Open();
 
-                        SqlCommand cmd = new SqlCommand("sp_GantiReservasi", conn);
-                        cmd.CommandType = CommandType.StoredProcedure;
+                        DateTime waktuBooking = dtpTanggal.Value.Date + dtpJam.Value.TimeOfDay;
 
-                        cmd.Parameters.AddWithValue("@nama_pelanggan", textBoxNama.Text);
-                        cmd.Parameters.AddWithValue("@id_layanan", comboBoxLayanan.SelectedValue);
-                        cmd.Parameters.AddWithValue("@id_capster", comboBoxCapster.SelectedValue);
-                        cmd.Parameters.AddWithValue("@id_jadwal", comboBoxJadwal.SelectedValue);
-                        cmd.Parameters.AddWithValue("@id_reservasi", idReservasi);
+                        string queryCek = "SELECT COUNT(*) FROM Reservasi WHERE id_capster = @id_cap AND jam_booking = @jam AND id_reservasi <> @id_res AND status_reservasi <> 'Selesai'";
+                        using (SqlCommand cmdCek = new SqlCommand(queryCek, conn))
+                        {
+                            cmdCek.Parameters.AddWithValue("@id_cap", comboBoxCapster.SelectedValue ?? DBNull.Value);
+                            cmdCek.Parameters.AddWithValue("@jam", waktuBooking);
+                            cmdCek.Parameters.AddWithValue("@id_res", Convert.ToInt32(idReservasi));
 
-                        cmd.ExecuteNonQuery();
+                            int jumlahBentrok = (int)cmdCek.ExecuteScalar();
 
-                        MessageBox.Show("Data reservasi berhasil diubah!");
-                        RefreshTable();
+                            if (jumlahBentrok > 0)
+                            {
+                                MessageBox.Show("Gagal mengubah! Capster sudah memiliki jadwal booking aktif lain di jam dan tanggal tersebut.",
+                                                "Jadwal Bentrok", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return; 
+                            }
+                        }
+
+                        using (SqlCommand cmd = new SqlCommand("sp_GantiReservasi", conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+
+                            cmd.Parameters.AddWithValue("@id_reservasi", Convert.ToInt32(idReservasi));
+                            cmd.Parameters.AddWithValue("@nama_pelanggan", textBoxNama.Text);
+                            cmd.Parameters.AddWithValue("@id_layanan", comboBoxLayanan.SelectedValue ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@id_capster", comboBoxCapster.SelectedValue ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@jam", waktuBooking);
+
+                            cmd.ExecuteNonQuery();
+
+                            using (SqlCommand cmdBackup = new SqlCommand("sp_AutoBackupReservasi", conn))
+                            {
+                                cmdBackup.CommandType = CommandType.StoredProcedure;
+                                cmdBackup.ExecuteNonQuery();
+                            }
+
+                            MessageBox.Show("Data reservasi berhasil diubah!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            RefreshTable();
+                        }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Gagal mengubah data: " + ex.Message);
+                        MessageBox.Show("Gagal mengubah data: " + ex.Message, "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
-            }
-            else
-            {
-                MessageBox.Show("Pilih baris di tabel yang ingin diganti!");
             }
         }
 
@@ -234,32 +333,18 @@ namespace Barbershop
                 {
                     conn.Open();
                     string query = "UPDATE Reservasi SET nama_pelanggan = 'HACKED' WHERE nama_pelanggan = '" + textBoxNama.Text + "'";
-        private void btnSearch_Click(object sender, EventArgs e)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string sql = "SELECT * FROM Reservasi WHERE nama_pelanggan = '" + txtSearch.Text + "'";
-                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dataGridView1.DataSource = dt;
-            }
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         int result = cmd.ExecuteNonQuery();
-                        MessageBox.Show(result + " baris berhasil dilakukan SQL Injection!");
+                        MessageBox.Show(result + " baris berhasil dilakukan SQL Injection!", "Simulasi Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 RefreshTable();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -271,29 +356,38 @@ namespace Barbershop
                 {
                     conn.Open();
                     string query = @"
-                IF OBJECT_ID('dbo.Reservasi_Backup') IS NOT NULL
-                BEGIN
-                    DELETE FROM dbo.Reservasi;
-                    SET IDENTITY_INSERT dbo.Reservasi ON;
-                    INSERT INTO dbo.Reservasi (id_reservasi, id_layanan, id_capster, id_jadwal, status_reservasi, status_pembayaran, nama_pelanggan)
-                    SELECT id_reservasi, id_layanan, id_capster, id_jadwal, status_reservasi, status_pembayaran, nama_pelanggan 
-                    FROM dbo.Reservasi_Backup;
+                    IF EXISTS (SELECT 1 FROM dbo.Reservasi_Backup)
+                    BEGIN
+                        DELETE FROM dbo.Reservasi;
+                        SET IDENTITY_INSERT dbo.Reservasi ON;
+                        
+                        INSERT INTO dbo.Reservasi (id_reservasi, id_layanan, id_capster, status_reservasi, status_pembayaran, jam_booking, nama_pelanggan)
+                        SELECT id_reservasi, id_layanan, id_capster, status_reservasi, status_pembayaran, jam_booking, nama_pelanggan 
+                        FROM dbo.Reservasi_Backup;
 
-                    SET IDENTITY_INSERT dbo.Reservasi OFF;
-                END";
+                        SET IDENTITY_INSERT dbo.Reservasi OFF;
+                    END";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
                 }
-                MessageBox.Show("Data berhasil direset!");
+                MessageBox.Show("Sistem berhasil dipulihkan!", "Pemulihan Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 RefreshTable();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Reset gagal: " + ex.Message);
+                MessageBox.Show("Reset gagal: " + ex.Message, "Error Pemulihan", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
+        private void comboBoxJadwal_SelectedIndexChanged(object sender, EventArgs e)
+        {
         }
     }
 }

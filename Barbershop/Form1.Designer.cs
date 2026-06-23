@@ -37,7 +37,6 @@
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.comboBoxCapster = new System.Windows.Forms.ComboBox();
-            this.comboBoxJadwal = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -57,6 +56,12 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnTestInjection = new System.Windows.Forms.Button();
             this.btnResetData = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.dtpTanggal = new System.Windows.Forms.DateTimePicker();
+            this.dtpJam = new System.Windows.Forms.DateTimePicker();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
@@ -80,7 +85,7 @@
             // btnInsert
             // 
             this.btnInsert.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.btnInsert.Location = new System.Drawing.Point(589, 49);
+            this.btnInsert.Location = new System.Drawing.Point(506, 47);
             this.btnInsert.Name = "btnInsert";
             this.btnInsert.Size = new System.Drawing.Size(75, 23);
             this.btnInsert.TabIndex = 2;
@@ -90,9 +95,12 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(12, 258);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(898, 180);
@@ -101,7 +109,7 @@
             // btnUpdate
             // 
             this.btnUpdate.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnUpdate.Location = new System.Drawing.Point(750, 91);
+            this.btnUpdate.Location = new System.Drawing.Point(649, 47);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(75, 23);
             this.btnUpdate.TabIndex = 4;
@@ -113,7 +121,7 @@
             // 
             this.btnDelete.BackColor = System.Drawing.Color.Brown;
             this.btnDelete.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnDelete.Location = new System.Drawing.Point(589, 127);
+            this.btnDelete.Location = new System.Drawing.Point(506, 130);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 23);
             this.btnDelete.TabIndex = 5;
@@ -128,14 +136,6 @@
             this.comboBoxCapster.Name = "comboBoxCapster";
             this.comboBoxCapster.Size = new System.Drawing.Size(187, 24);
             this.comboBoxCapster.TabIndex = 6;
-            // 
-            // comboBoxJadwal
-            // 
-            this.comboBoxJadwal.FormattingEnabled = true;
-            this.comboBoxJadwal.Location = new System.Drawing.Point(298, 126);
-            this.comboBoxJadwal.Name = "comboBoxJadwal";
-            this.comboBoxJadwal.Size = new System.Drawing.Size(187, 24);
-            this.comboBoxJadwal.TabIndex = 7;
             // 
             // label1
             // 
@@ -158,7 +158,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(242, 130);
+            this.label3.Location = new System.Drawing.Point(238, 130);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(50, 16);
             this.label3.TabIndex = 10;
@@ -175,12 +175,13 @@
             // 
             // btnGanti
             // 
-            this.btnGanti.Location = new System.Drawing.Point(589, 91);
+            this.btnGanti.BackColor = System.Drawing.SystemColors.Info;
+            this.btnGanti.Location = new System.Drawing.Point(506, 87);
             this.btnGanti.Name = "btnGanti";
             this.btnGanti.Size = new System.Drawing.Size(75, 23);
             this.btnGanti.TabIndex = 12;
             this.btnGanti.Text = "Ganti";
-            this.btnGanti.UseVisualStyleBackColor = true;
+            this.btnGanti.UseVisualStyleBackColor = false;
             this.btnGanti.Click += new System.EventHandler(this.btnGanti_Click);
             // 
             // bindingNavigator1
@@ -300,7 +301,7 @@
             // 
             // btnTestInjection
             // 
-            this.btnTestInjection.Location = new System.Drawing.Point(589, 168);
+            this.btnTestInjection.Location = new System.Drawing.Point(649, 88);
             this.btnTestInjection.Name = "btnTestInjection";
             this.btnTestInjection.Size = new System.Drawing.Size(75, 23);
             this.btnTestInjection.TabIndex = 14;
@@ -310,7 +311,7 @@
             // 
             // btnResetData
             // 
-            this.btnResetData.Location = new System.Drawing.Point(589, 208);
+            this.btnResetData.Location = new System.Drawing.Point(649, 130);
             this.btnResetData.Name = "btnResetData";
             this.btnResetData.Size = new System.Drawing.Size(75, 23);
             this.btnResetData.TabIndex = 15;
@@ -318,11 +319,70 @@
             this.btnResetData.UseVisualStyleBackColor = true;
             this.btnResetData.Click += new System.EventHandler(this.btnResetData_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(506, 199);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "cari";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Location = new System.Drawing.Point(310, 199);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(175, 22);
+            this.txtSearch.TabIndex = 17;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(238, 202);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(66, 16);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "cari nama";
+            // 
+            // dtpTanggal
+            // 
+            this.dtpTanggal.CustomFormat = "yyyy - MM - dd   HH:mm";
+            this.dtpTanggal.Location = new System.Drawing.Point(298, 130);
+            this.dtpTanggal.Name = "dtpTanggal";
+            this.dtpTanggal.Size = new System.Drawing.Size(187, 22);
+            this.dtpTanggal.TabIndex = 19;
+            // 
+            // dtpJam
+            // 
+            this.dtpJam.CustomFormat = "HH:mm";
+            this.dtpJam.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpJam.Location = new System.Drawing.Point(298, 158);
+            this.dtpJam.Name = "dtpJam";
+            this.dtpJam.ShowUpDown = true;
+            this.dtpJam.Size = new System.Drawing.Size(187, 22);
+            this.dtpJam.TabIndex = 20;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(238, 163);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(33, 16);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "Jam";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(922, 450);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.dtpJam);
+            this.Controls.Add(this.dtpTanggal);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnResetData);
             this.Controls.Add(this.btnTestInjection);
             this.Controls.Add(this.bindingNavigator1);
@@ -331,7 +391,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBoxJadwal);
             this.Controls.Add(this.comboBoxCapster);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnUpdate);
@@ -360,7 +419,6 @@
         private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.ComboBox comboBoxCapster;
-        private System.Windows.Forms.ComboBox comboBoxJadwal;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -378,13 +436,13 @@
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveNextItem;
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
-<<<<<<< HEAD
         private System.Windows.Forms.Button btnTestInjection;
         private System.Windows.Forms.Button btnResetData;
-=======
-        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox txtSearch;
->>>>>>> e29a21ff04056e53f0e95fd8ee0fdd891f522986
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.DateTimePicker dtpTanggal;
+        private System.Windows.Forms.DateTimePicker dtpJam;
+        private System.Windows.Forms.Label label6;
     }
 }
-
