@@ -62,8 +62,11 @@
             this.dtpTanggal = new System.Windows.Forms.DateTimePicker();
             this.dtpJam = new System.Windows.Forms.DateTimePicker();
             this.label6 = new System.Windows.Forms.Label();
+<<<<<<< HEAD
             this.btnImportExcel = new System.Windows.Forms.Button();
             this.btnCetakLaporan = new System.Windows.Forms.Button();
+=======
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
@@ -211,7 +214,11 @@
             this.bindingNavigator1.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.bindingNavigator1.Name = "bindingNavigator1";
             this.bindingNavigator1.PositionItem = this.bindingNavigatorPositionItem;
+<<<<<<< HEAD
             this.bindingNavigator1.Size = new System.Drawing.Size(922, 31);
+=======
+            this.bindingNavigator1.Size = new System.Drawing.Size(922, 27);
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
             this.bindingNavigator1.TabIndex = 13;
             this.bindingNavigator1.Text = "bindingNavigator1";
             // 
@@ -221,7 +228,11 @@
             this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
+<<<<<<< HEAD
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(29, 28);
+=======
+            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(29, 24);
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
             this.bindingNavigatorAddNewItem.Text = "Add new";
             // 
             // bindingNavigatorCountItem
@@ -374,6 +385,7 @@
             this.label6.TabIndex = 21;
             this.label6.Text = "Jam";
             // 
+<<<<<<< HEAD
             // btnImportExcel
             // 
             this.btnImportExcel.Location = new System.Drawing.Point(775, 30);
@@ -394,13 +406,18 @@
             this.btnCetakLaporan.UseVisualStyleBackColor = true;
             this.btnCetakLaporan.Click += new System.EventHandler(this.btnCetakLaporan_Click);
             // 
+=======
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(922, 450);
+<<<<<<< HEAD
             this.Controls.Add(this.btnCetakLaporan);
             this.Controls.Add(this.btnImportExcel);
+=======
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
             this.Controls.Add(this.label6);
             this.Controls.Add(this.dtpJam);
             this.Controls.Add(this.dtpTanggal);
@@ -468,7 +485,10 @@
         private System.Windows.Forms.DateTimePicker dtpTanggal;
         private System.Windows.Forms.DateTimePicker dtpJam;
         private System.Windows.Forms.Label label6;
+<<<<<<< HEAD
         private System.Windows.Forms.Button btnImportExcel;
         private System.Windows.Forms.Button btnCetakLaporan;
+=======
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
     }
 }

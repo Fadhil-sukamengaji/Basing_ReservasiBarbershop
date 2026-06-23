@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+<<<<<<< HEAD
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Windows.Forms;
@@ -7,6 +8,10 @@ using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using System.Data.OleDb; 
 
+=======
+using System.Data.SqlClient;
+using System.Windows.Forms;
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
 
 namespace Barbershop
 {
@@ -17,7 +22,11 @@ namespace Barbershop
         BindingSource bs = new BindingSource();
         SqlCommandBuilder cb;
 
+<<<<<<< HEAD
         string connectionString = @"Data Source=DESKTOP-FHLKCTQ\SEHAB;Initial Catalog=DBBarbershop;Integrated Security=True";
+=======
+        string connectionString = @"Data Source=PADILSU\PADIL;Initial Catalog=DBBarbershop;Integrated Security=True";
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
 
         public Form1()
         {
@@ -394,6 +403,7 @@ namespace Barbershop
         private void comboBoxJadwal_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
+<<<<<<< HEAD
 
         private void btnImportExcel_Click(object sender, EventArgs e)
         {
@@ -477,8 +487,6 @@ namespace Barbershop
                     // Karena di desain report ada tulisan "Status Pembayaran : LUNAS", mungkin Anda ingin memfilter datanya:
                     string query = "SELECT * FROM vw_Reservasi WHERE status_pembayaran = 'Lunas'";
 
-                    // Jika ingin mencetak semua data, gunakan: string query = "SELECT * FROM vw_Reservasi";
-
                     // 3. Tarik data dari SQL Server dan masukkan ke dalam DataTable
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
@@ -506,5 +514,7 @@ namespace Barbershop
                 }
             }
         }
+=======
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
     }
 }
