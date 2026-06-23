@@ -1,7 +1,17 @@
 ﻿using System;
 using System.Data;
+<<<<<<< HEAD
+using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
+using System.Data.OleDb; 
+
+=======
+using System.Data.SqlClient;
+using System.Windows.Forms;
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
 
 namespace Barbershop
 {
@@ -12,7 +22,11 @@ namespace Barbershop
         BindingSource bs = new BindingSource();
         SqlCommandBuilder cb;
 
+<<<<<<< HEAD
+        string connectionString = @"Data Source=DESKTOP-FHLKCTQ\SEHAB;Initial Catalog=DBBarbershop;Integrated Security=True";
+=======
         string connectionString = @"Data Source=PADILSU\PADIL;Initial Catalog=DBBarbershop;Integrated Security=True";
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
 
         public Form1()
         {
@@ -389,5 +403,118 @@ namespace Barbershop
         private void comboBoxJadwal_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
+<<<<<<< HEAD
+
+        private void btnImportExcel_Click(object sender, EventArgs e)
+        {
+            // 1. Membuka dialog untuk memilih file Excel
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Excel Files|*.xlsx;*.xls;*.xlsm",
+                Title = "Pilih File Excel Data Layanan"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+
+                // 2. String koneksi OLEDB untuk membaca file Excel (.xlsx)
+                string excelConnectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={filePath};Extended Properties='Excel 12.0 Xml;HDR=YES;'";
+
+                using (OleDbConnection excelConn = new OleDbConnection(excelConnectionString))
+                {
+                    try
+                    {
+                        excelConn.Open();
+
+                        // Membaca data dari Sheet1 (sesuaikan nama sheet jika berbeda, pastikan pakai tanda $)
+                        OleDbCommand cmdExcel = new OleDbCommand("SELECT * FROM [Sheet1$]", excelConn);
+
+                        using (OleDbDataReader reader = cmdExcel.ExecuteReader())
+                        {
+                            using (SqlConnection sqlConn = new SqlConnection(connectionString))
+                            {
+                                sqlConn.Open();
+                                int barisBerhasil = 0;
+
+                                // 3. Looping baris demi baris dari file Excel
+                                while (reader.Read())
+                                {
+                                    // Memastikan baris data di excel tidak kosong
+                                    if (reader["nama_layanan"] != DBNull.Value && reader["harga"] != DBNull.Value)
+                                    {
+                                        string namaLayanan = reader["nama_layanan"].ToString();
+                                        decimal hargaLayanan = Convert.ToDecimal(reader["harga"]);
+
+                                        // 4. Query Insert langsung ke tabel Layanan database SQL Server
+                                        string queryInsert = "INSERT INTO Layanan (nama_layanan, harga) VALUES (@nama, @harga)";
+
+                                        using (SqlCommand cmdSql = new SqlCommand(queryInsert, sqlConn))
+                                        {
+                                            cmdSql.Parameters.AddWithValue("@nama", namaLayanan);
+                                            cmdSql.Parameters.AddWithValue("@harga", hargaLayanan);
+
+                                            cmdSql.ExecuteNonQuery();
+                                            barisBerhasil++;
+                                        }
+                                    }
+                                }
+
+                                MessageBox.Show($"{barisBerhasil} Data Layanan Berhasil Diimport masuk ke Database!", "Sukses Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                // 5. Refresh data ComboBox Layanan agar item baru langsung muncul pilihan menunya
+                                LoadComboBoxes();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Gagal melakukan import data: " + ex.Message, "Error Engine OLEDB", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnCetakLaporan_Click(object sender, EventArgs e)
+        {
+            // 1. Siapkan koneksi ke database Anda
+            string connectionString = @"Data Source=DESKTOP-FHLKCTQ\SEHAB;Initial Catalog=DBBarbershop;Integrated Security=True";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    // 2. Buat query untuk mengambil data dari database (sesuaikan dengan kebutuhan Anda)
+                    // Karena di desain report ada tulisan "Status Pembayaran : LUNAS", mungkin Anda ingin memfilter datanya:
+                    string query = "SELECT * FROM vw_Reservasi WHERE status_pembayaran = 'Lunas'";
+
+                    // 3. Tarik data dari SQL Server dan masukkan ke dalam DataTable
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt); // Ini langkah krusialnya: mengisi tabel kosong dengan data asli
+
+                    // 4. Panggil file rancangan Crystal Report Anda
+                    CrystalReportReservasi rpt = new CrystalReportReservasi();
+
+                    // 5. Dorong (Set) data dari DataTable C# masuk ke dalam Crystal Report
+                    rpt.SetDataSource(dt);
+
+                    // 6. Buka FormCetak dan tampilkan Report-nya di dalam CrystalReportViewer
+                    FormCetak frmCetak = new FormCetak("Lunas"); // Atau disesuaikan dengan kebutuhan parameter Anda
+
+                    // Pastikan 'crystalReportViewer1' di FormCetak modifier-nya diubah jadi 'Public' atau 'Internal'
+                    // Atau Anda bisa membuat property/method khusus di FormCetak untuk menerima object rpt ini.
+                    frmCetak.crystalReportViewer1.ReportSource = rpt;
+                    frmCetak.crystalReportViewer1.Refresh();
+
+                    frmCetak.Show();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal memuat report: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+=======
+>>>>>>> 62ab542a04cd0c643c001af38840eac32eeb91e9
     }
 }
