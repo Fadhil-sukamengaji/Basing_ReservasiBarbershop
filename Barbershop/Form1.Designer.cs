@@ -113,7 +113,7 @@
             this.btnUpdate.BackColor = System.Drawing.Color.WhiteSmoke;
             this.btnUpdate.Location = new System.Drawing.Point(649, 47);
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btnUpdate.Size = new System.Drawing.Size(104, 23);
             this.btnUpdate.TabIndex = 4;
             this.btnUpdate.Text = "Selesai";
             this.btnUpdate.UseVisualStyleBackColor = false;
@@ -211,7 +211,7 @@
             this.bindingNavigator1.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.bindingNavigator1.Name = "bindingNavigator1";
             this.bindingNavigator1.PositionItem = this.bindingNavigatorPositionItem;
-            this.bindingNavigator1.Size = new System.Drawing.Size(922, 31);
+            this.bindingNavigator1.Size = new System.Drawing.Size(922, 27);
             this.bindingNavigator1.TabIndex = 13;
             this.bindingNavigator1.Text = "bindingNavigator1";
             // 
@@ -221,7 +221,7 @@
             this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(29, 28);
+            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(29, 24);
             this.bindingNavigatorAddNewItem.Text = "Add new";
             // 
             // bindingNavigatorCountItem
@@ -305,7 +305,7 @@
             // 
             this.btnTestInjection.Location = new System.Drawing.Point(649, 88);
             this.btnTestInjection.Name = "btnTestInjection";
-            this.btnTestInjection.Size = new System.Drawing.Size(75, 23);
+            this.btnTestInjection.Size = new System.Drawing.Size(104, 23);
             this.btnTestInjection.TabIndex = 14;
             this.btnTestInjection.Text = "test";
             this.btnTestInjection.UseVisualStyleBackColor = true;
@@ -315,7 +315,7 @@
             // 
             this.btnResetData.Location = new System.Drawing.Point(649, 130);
             this.btnResetData.Name = "btnResetData";
-            this.btnResetData.Size = new System.Drawing.Size(75, 23);
+            this.btnResetData.Size = new System.Drawing.Size(104, 23);
             this.btnResetData.TabIndex = 15;
             this.btnResetData.Text = "reset";
             this.btnResetData.UseVisualStyleBackColor = true;
@@ -376,9 +376,9 @@
             // 
             // btnImportExcel
             // 
-            this.btnImportExcel.Location = new System.Drawing.Point(775, 30);
+            this.btnImportExcel.Location = new System.Drawing.Point(649, 163);
             this.btnImportExcel.Name = "btnImportExcel";
-            this.btnImportExcel.Size = new System.Drawing.Size(104, 36);
+            this.btnImportExcel.Size = new System.Drawing.Size(104, 24);
             this.btnImportExcel.TabIndex = 22;
             this.btnImportExcel.Text = "Import Excel";
             this.btnImportExcel.UseVisualStyleBackColor = true;
@@ -386,9 +386,9 @@
             // 
             // btnCetakLaporan
             // 
-            this.btnCetakLaporan.Location = new System.Drawing.Point(775, 91);
+            this.btnCetakLaporan.Location = new System.Drawing.Point(649, 202);
             this.btnCetakLaporan.Name = "btnCetakLaporan";
-            this.btnCetakLaporan.Size = new System.Drawing.Size(104, 35);
+            this.btnCetakLaporan.Size = new System.Drawing.Size(104, 24);
             this.btnCetakLaporan.TabIndex = 23;
             this.btnCetakLaporan.Text = "Cetak Laporan";
             this.btnCetakLaporan.UseVisualStyleBackColor = true;
